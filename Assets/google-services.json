@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "570283661106",
+    "firebase_url": "https://runner-60b2f-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "runner-60b2f",
+    "storage_bucket": "runner-60b2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570283661106:android:eb9eed160335649439692b",
+        "android_client_info": {
+          "package_name": "com.garbagefossa.runner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArABeEImIg7hdEqECOKh9WatMPDyp25CA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
