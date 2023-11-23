@@ -7,7 +7,6 @@ using static SwipeController;
 
 public class SwipeController : MonoBehaviour
 {
-    public static SwipeController Instance;
     const float SwipeThreshold = 50;
 
     public delegate void MoveDelegate(bool[] swipes);
@@ -17,18 +16,26 @@ public class SwipeController : MonoBehaviour
     public ClickDelegate ClickEvent;
 
     public enum Direction { Left, Right, Up, Down };
-    bool[] swipe = new bool[4];
-    private Vector2 startTouch, swipeDelta;
-    bool touchMoved;
+    private bool[] _swipes = new bool[4];
+    private Vector2 _startTouch, _swipeDelta;
+    private bool _touchMoved;
 
-    Vector2 TouchPosition() { return (Vector2)Input.mousePosition; }
-    bool TouchBegan() { return Input.GetMouseButtonDown(0); }
-    bool TouchEnded() { return Input.GetMouseButtonUp(0); }
-    bool GetTouch() { return Input.GetMouseButton(0); }
+    private Vector2 TouchPosition() { return (Vector2)Input.mousePosition; }
+    private bool TouchBegan() { return Input.GetMouseButtonDown(0); }
+    private bool TouchEnded() { return Input.GetMouseButtonUp(0); }
+    private bool GetTouch() { return Input.GetMouseButton(0); }
+
+    public static SwipeController Instance;
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(Instance.gameObject);
+        }
+
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -37,32 +44,32 @@ public class SwipeController : MonoBehaviour
 
         if (TouchBegan())
         {
-            startTouch = TouchPosition();
-            touchMoved = true;
+            _startTouch = TouchPosition();
+            _touchMoved = true;
         }
-        else if (TouchEnded() && touchMoved)
+        else if (TouchEnded() && _touchMoved)
         {
             SendSwipe();
-            touchMoved = false;
+            _touchMoved = false;
         }
 
-        swipeDelta = Vector2.zero;
-        if (touchMoved && GetTouch())
+        _swipeDelta = Vector2.zero;
+        if (_touchMoved && GetTouch())
         {
-            swipeDelta = TouchPosition() - startTouch;
+            _swipeDelta = TouchPosition() - _startTouch;
         }
 
-        if (swipeDelta.magnitude > SwipeThreshold)
+        if (_swipeDelta.magnitude > SwipeThreshold)
         {
-            if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
+            if (Mathf.Abs(_swipeDelta.x) > Mathf.Abs(_swipeDelta.y))
             {
-                swipe[(int)Direction.Left] = swipeDelta.x < 0;
-                swipe[(int)Direction.Right] = swipeDelta.x > 0;
+                _swipes[(int)Direction.Left] = _swipeDelta.x < 0;
+                _swipes[(int)Direction.Right] = _swipeDelta.x > 0;
             }
             else
             {
-                swipe[(int)Direction.Down] = swipeDelta.y < 0;
-                swipe[(int)Direction.Up] = swipeDelta.y > 0;
+                _swipes[(int)Direction.Down] = _swipeDelta.y < 0;
+                _swipes[(int)Direction.Up] = _swipeDelta.y > 0;
             }
             SendSwipe();
         }
@@ -71,10 +78,10 @@ public class SwipeController : MonoBehaviour
 
     void SendSwipe()
     {
-        if (swipe[0] || swipe[1] || swipe[2] || swipe[3])
+        if (_swipes[0] || _swipes[1] || _swipes[2] || _swipes[3])
         {
-            Debug.Log($"{swipe[0]} | {swipe[1]} | {swipe[2]} | {swipe[3]}");
-            MoveEvent?.Invoke(swipe);
+            Debug.Log($"{_swipes[0]} | {_swipes[1]} | {_swipes[2]} | {_swipes[3]}");
+            MoveEvent?.Invoke(_swipes);
         }
         else
         {
@@ -86,11 +93,11 @@ public class SwipeController : MonoBehaviour
 
     private void Reset()
     {
-        startTouch = swipeDelta = Vector2.zero;
-        touchMoved = false;
-        for (int i = 0; i < 4; i++)
+        _startTouch = _swipeDelta = Vector2.zero;
+        _touchMoved = false;
+        for (int i = 0; i < _swipes.Length; i++)
         {
-            swipe[i] = false;
+            _swipes[i] = false;
         }
     }
 }

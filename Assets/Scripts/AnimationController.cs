@@ -12,20 +12,6 @@ public class AnimationController : MonoBehaviour
     [SerializeField] private string _rollAnimation;
     [SerializeField] private string _stumbleAnimation;
 
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.A))
-    //        SwitchToIdle();
-    //    if (Input.GetKeyDown(KeyCode.S))
-    //        SwitchToRun();
-    //    if (Input.GetKeyDown(KeyCode.D))
-    //        SwitchToJump();
-    //    if (Input.GetKeyDown(KeyCode.F))
-    //        SwitchToRoll();
-    //    if (Input.GetKeyDown(KeyCode.G))
-    //        SwitchToStumble();
-    //}
-
     public void SwitchToIdle()
     {
         _animator.Play(_idleAnimation);
