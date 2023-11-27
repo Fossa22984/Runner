@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    [SerializeField] private GameManager _gameManager;
-
-    [SerializeField] private GameObject _chunkPrefab;
     [SerializeField] private List<GameObject> _chunks = new List<GameObject>();
+    private List<GameObject> _activeChunks = new List<GameObject>();
+
+    [SerializeField] private int _chunksCount;
 
     void Start()
     {
@@ -16,42 +16,43 @@ public class ChunkGenerator : MonoBehaviour
 
     void Update()
     {
-        if (_gameManager.IsPause) return;
+        if (GameManager.IsPause) return;
 
-        foreach (var chunk in _chunks)       
-            chunk.transform.position -= new Vector3(0, 0, _gameManager.Speed * Time.deltaTime);
-        
-        if (_chunks[0].transform.position.z < -15)
+        foreach (var chunk in _activeChunks)
+            chunk.transform.position -= new Vector3(0, 0, GameManager.Speed * Time.deltaTime);
+
+        if (_activeChunks.Count != 0 && _activeChunks[0].transform.position.z < ConstVar.ChunkDeleteDistance)
         {
-            PoolManager.PutObject(_chunks[0]);
-            _chunks.RemoveAt(0);
+            PoolManager.PutObject(_activeChunks[0]);
+            _activeChunks.RemoveAt(0);
 
             CreateNextChunk();
         }
     }
 
-    private void CreateNextChunk()
-    {
-        var chunk = PoolManager.GetObject(_chunkPrefab);
-
-        var position = Vector3.zero;
-        if (_chunks.Count > 0)
-            position = _chunks[_chunks.Count - 1].transform.position + new Vector3(0, 0, 12);
-        
-        chunk.transform.position = position;
-        chunk.SetActive(true);
-        _chunks.Add(chunk);
-    }
-
     public void ResetChunks()
     {
-        while (_chunks.Count > 0)
+        while (_activeChunks.Count > 0)
         {
-            PoolManager.PutObject(_chunks[0]);
-            _chunks.RemoveAt(0);
+            PoolManager.PutObject(_activeChunks[0]);
+            _activeChunks.RemoveAt(0);
         }
 
-        for (int i = 0; i < _gameManager.ChunkCount; i++)
-            CreateNextChunk();     
+        for (int i = 0; i < _chunksCount; i++)
+            CreateNextChunk();
+    }
+
+    private void CreateNextChunk()
+    {
+        var randomChunk = Random.Range(0, _chunks.Count);
+        var chunk = PoolManager.GetObject(_chunks[randomChunk]);
+
+        var position = Vector3.zero;
+        if (_activeChunks.Count > 0)
+            position = _activeChunks[_activeChunks.Count - 1].transform.position + new Vector3(0, 0, ConstVar.LengthChunk);
+
+        chunk.transform.position = position;
+        chunk.SetActive(true);
+        _activeChunks.Add(chunk);
     }
 }

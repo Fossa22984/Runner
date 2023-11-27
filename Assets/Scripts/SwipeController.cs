@@ -76,7 +76,7 @@ public class SwipeController : MonoBehaviour
 
     }
 
-    void SendSwipe()
+    private void SendSwipe()
     {
         if (_swipes[0] || _swipes[1] || _swipes[2] || _swipes[3])
         {

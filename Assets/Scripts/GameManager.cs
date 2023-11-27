@@ -5,17 +5,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static bool IsPause { get; private set; } = true;
+
+    public static float Speed { get; private set; } = 10f;
+
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ObstacleGenerator _obstacleGenerator;
     [SerializeField] private PlayerController _playerController;
 
     [SerializeField] private List<InitializePoolData> _initializePool = new List<InitializePoolData>();
     [SerializeField] private Transform _parentForPool;
-
-    [field: SerializeField] public float Speed { get; private set; }
-    [field: SerializeField] public int ChunkCount { get; private set; }
-    [field: SerializeField] public bool IsPause { get; private set; }
-
 
     [SerializeField] private TextMeshProUGUI _timerText;
 
@@ -36,12 +35,16 @@ public class GameManager : MonoBehaviour
     //    return string.Format("{0:00}:{1:00}", minutes, seconds);
     //}
 
+    private void Awake()
+    {
+        PreparePool();
+    }
 
     public void StartLevel()
     {
         //ElapsedTime = 0;
         _playerController.StartLevel();
-        _obstacleGenerator.ResetMaps();
+        // _obstacleGenerator.ResetChunks();
         IsPause = false;
         SwipeController.Instance.enabled = true;
     }
@@ -54,13 +57,8 @@ public class GameManager : MonoBehaviour
         //ElapsedTime = 0;
         _playerController.ResetPlayer();
         _chunkGenerator.ResetChunks();
-        _obstacleGenerator.ResetMaps();
- 
-    }
+        _obstacleGenerator.ResetChunks();
 
-    void Start()
-    {
-        PreparePool();
     }
 
     private void PreparePool()

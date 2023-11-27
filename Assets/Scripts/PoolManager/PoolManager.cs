@@ -9,14 +9,15 @@ public static class PoolManager
 
     public static void PutObject(GameObject gameObject)
     {
-        if (_pool.ContainsKey(gameObject.name))
+        var key = gameObject.name;
+        if (_pool.ContainsKey(key))
         {
-            _pool[gameObject.name].AddLast(gameObject);
+            _pool[key].AddLast(gameObject);
         }
         else
         {
-            _pool[gameObject.name] = new LinkedList<GameObject>();
-            _pool[gameObject.name].AddLast(gameObject);
+            _pool[key] = new LinkedList<GameObject>();
+            _pool[key].AddLast(gameObject);
         }
         gameObject.transform.SetParent(_parentForPoolObjects);
         gameObject.SetActive(false);
@@ -36,15 +37,17 @@ public static class PoolManager
             else
             {
                 var result = GameObject.Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation);
-                result.name = gameObject.name;
+                result.name = key;
+                result.transform.SetParent(_parentForPoolObjects);
                 return result;
             }
         }
         else
         {
-            _pool[gameObject.name] = new LinkedList<GameObject>();
+            _pool[key] = new LinkedList<GameObject>();
             var result = GameObject.Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation);
-            result.name = gameObject.name;
+            result.name = key;
+            result.transform.SetParent(_parentForPoolObjects);
             return result;
         }
     }
