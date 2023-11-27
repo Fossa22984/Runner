@@ -9,6 +9,9 @@ public class Coin : MonoBehaviour
     public delegate void CoinRemoveDelegate(GameObject coin);
     public CoinRemoveDelegate CoinRemoveEvent;
 
+    public delegate void SetCoinDelegate();
+    public SetCoinDelegate SetCoinEvent;
+
     void Start()
     {
         // _rotationSpeed += Random.Range(0, _rotationSpeed / 4f);
@@ -21,9 +24,9 @@ public class Coin : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // PoolManager.PutObject(gameObject);
-
         PoolManager.PutObject(gameObject);
         CoinRemoveEvent?.Invoke(gameObject);
+
+        SetCoinEvent?.Invoke();
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CoinGenerator : MonoBehaviour
 {
+    public delegate void SetCoinDelegate();
+    public SetCoinDelegate SetCoinEvent;
 
     [SerializeField] private GameObject _coinPrefab;
     private List<GameObject> _activeCoins = new List<GameObject>();
@@ -45,6 +47,11 @@ public class CoinGenerator : MonoBehaviour
         _activeCoins.Remove(coin);
     }
 
+    private void SetCoin()
+    {
+        SetCoinEvent?.Invoke();
+    }
+
 
     public void CreateCoins(Style coinStyle, Vector3 position)
     {
@@ -56,7 +63,10 @@ public class CoinGenerator : MonoBehaviour
             {
                 var coin = PoolManager.GetObject(_coinPrefab);
                 if (coin.TryGetComponent<Coin>(out var res))
+                {
                     res.CoinRemoveEvent += RemoveCoin;
+                    res.SetCoinEvent += SetCoin;
+                }
                 coinPosition.y = coinsHeight;
                 coinPosition.z = i * ((float)1);
                 coin.transform.position = coinPosition + position;
@@ -70,7 +80,10 @@ public class CoinGenerator : MonoBehaviour
             {
                 var coin = PoolManager.GetObject(_coinPrefab);
                 if (coin.TryGetComponent<Coin>(out var res))
+                {
                     res.CoinRemoveEvent += RemoveCoin;
+                    res.SetCoinEvent += SetCoin;
+                }
                 coinPosition.y = Mathf.Max(-1 / 2f * Mathf.Pow(i, 2) + 2.5f, coinsHeight);
                 coinPosition.z = i * ((float)1);
                 coin.transform.position = coinPosition + position;

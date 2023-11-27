@@ -9,7 +9,7 @@ public static class ConstVar
     public const float LengthChunk = 12f;
     public const float ChunkDeleteDistance = -15f;
     public const float StartOfSpawn = 15f;
-    public const float LaneOffset = 1.25f;
+    public const float LaneOffset = 1f;
 
 
 }

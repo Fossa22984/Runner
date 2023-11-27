@@ -4,7 +4,9 @@
 [System.Serializable]
 public class PlayersData
 {
-    public List<Player> Players = new List<Player>();
+    public List<Player> Players;
+
+    public PlayersData() { Players = new List<Player>(); }
 }
 
 
