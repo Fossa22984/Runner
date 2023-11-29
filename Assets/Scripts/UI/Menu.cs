@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,14 +5,12 @@ using UnityEngine;
 public class Menu : MonoBehaviour
 {
     [SerializeField] private Rewarded _rewarded;
-
-    [SerializeField] private LeaderboardItem _leaderboardItem;
-    [SerializeField] private Transform _parentForLeaderboardItem;
-    [SerializeField] private GameObject _leaderboard;
+    [SerializeField] private Leaderboard _leaderboard;
+    [SerializeField] private GameObject _gameOverView;
+    [SerializeField] private GameObject _playButton;
 
     [SerializeField] private TMP_Text _scoreText;
     private string _scoreFormat;
-
 
     private void Awake()
     {
@@ -25,28 +22,17 @@ public class Menu : MonoBehaviour
         _scoreText.text = string.Format(_scoreFormat, currentScore.ToString(), score.ToString(), coins.ToString());
     }
 
-    public void ShowLeaderboard(List<Player> players)
+    public void ShowViewGameOver(List<Player> players)
     {
-        foreach (var player in players)
-            CreatePlayerItem(player);
-
-        _leaderboard.SetActive(true);
-    }
-    public void HideLeaderboard()
-    {
-        _leaderboard.SetActive(false);
-
-
-        foreach (Transform item in _parentForLeaderboardItem)
-        {
-            if (item.GetComponent<LeaderboardItem>() != null)
-                Destroy(item.gameObject);
-        }
+        _rewarded.LoadAd();
+        _leaderboard.ShowLeaderboard(players);
+        _gameOverView.SetActive(true);
     }
 
-    private void CreatePlayerItem(Player player)
+    public void HideViewGameOver()
     {
-        var playerItem = Instantiate(_leaderboardItem, _parentForLeaderboardItem);
-        playerItem.SetPlayerData(player.Name, player.Score.BestScore);
+        _leaderboard.HideLeaderboard();
+        _gameOverView.SetActive(false);
+        _playButton.SetActive(true);
     }
 }

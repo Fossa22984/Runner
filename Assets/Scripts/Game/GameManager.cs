@@ -1,16 +1,15 @@
 using Assets.Scripts.DataBase;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
     public static bool IsPause { get; private set; } = true;
-    public static float Speed { get; private set; } = 10f;
+    public static float Speed { get; private set; } = ConstVar.StartingSpeed;
+
+    public delegate void LogOutDelegate();
+    public LogOutDelegate LogOutEvent;
 
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ObstacleGenerator _obstacleGenerator;
@@ -24,7 +23,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Menu _menu;
 
     [SerializeField] private PlayerRepository _player;
+
+    private float _speedChange = ConstVar.SpeedChangeStep;
     private float _elapsedTime = 0;
+
+    private void Awake()
+    {
+        PreparePool();
+        _deathZone.ResetLevelEvent += GameOver;
+        _coinGenerator.SetCoinEvent += SetCoin;
+    }
 
     void Update()
     {
@@ -32,24 +40,27 @@ public class GameManager : MonoBehaviour
 
         _elapsedTime += Time.deltaTime;
         var score = (int)(_elapsedTime * Speed);
+        if (_elapsedTime >= _speedChange)
+        {
+            Speed++;
+            _speedChange += ConstVar.SpeedChangeStep;
+            Debug.Log($"Speed: {Speed}");
+        }
+
         _menu.SetData(score, _player.Player.Score.BestScore, _player.Player.Score.Balance);
         _player.SetBestScore(score);
     }
 
-    private void Awake()
+    private void OnEnable()
     {
-        PreparePool();
-        // _deathZone.ResetLevelEvent += ResetLevel;
-        _deathZone.ResetLevelEvent += GameOver;
-        _coinGenerator.SetCoinEvent += SetCoin;
+        _menu.gameObject.SetActive(true);
+        _playerController.gameObject.SetActive(true);
+        _menu.SetData(0, _player.Player.Score.BestScore, _player.Player.Score.Balance);
     }
 
     public void StartLevel()
     {
-        _menu.SetData(0, _player.Player.Score.BestScore, _player.Player.Score.Balance);
-        //ElapsedTime = 0;
         _playerController.StartLevel();
-        // _obstacleGenerator.ResetChunks();
         IsPause = false;
         SwipeController.Instance.enabled = true;
     }
@@ -59,24 +70,47 @@ public class GameManager : MonoBehaviour
         IsPause = true;
         SwipeController.Instance.enabled = false;
         _playerController.ResetPlayer();
+        _playerController.ResetPlayerAnimation();
         await _player.ChangeUserData();
-        _menu.ShowLeaderboard(await _player.GetLeaders());
+        _menu.ShowViewGameOver(await _player.GetLeaders());
+    }
+    public void ContinueGame()
+    {
+        _player.SetBalance(ConstVar.Reward);
+
+        _playerController.ResetPlayer();
+        _chunkGenerator.ResetChunks();
+        _obstacleGenerator.ResetChunks();
+
+        _menu.HideViewGameOver();
     }
 
     public void ResetLevel()
     {
-        _menu.HideLeaderboard();
-
+        _menu.HideViewGameOver();
 
         _menu.SetData(0, _player.Player.Score.BestScore, _player.Player.Score.Balance);
         IsPause = true;
         SwipeController.Instance.enabled = false;
         _elapsedTime = 0;
 
-        //ElapsedTime = 0;
-        //_playerController.ResetPlayer();
+        _playerController.ResetPlayer();
         _chunkGenerator.ResetChunks();
         _obstacleGenerator.ResetChunks();
+
+        Speed = ConstVar.StartingSpeed;
+        _speedChange = ConstVar.SpeedChangeStep;
+    }
+
+    public async void QuitGame()
+    {
+        await _player.LogOut();
+        LogOutEvent?.Invoke();
+        _menu.gameObject.SetActive(false);
+        _playerController.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+
+        ResetLevel();
     }
 
     private void SetCoin()

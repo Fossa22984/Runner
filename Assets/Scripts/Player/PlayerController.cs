@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameManager _gameManager;
     [SerializeField] private AnimationController _animationController;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private CapsuleCollider _collider;
@@ -126,10 +125,9 @@ public class PlayerController : MonoBehaviour
         _animationController.SwitchToRun();
     }
 
-    public void ResetGame()
+    public void ResetPlayerAnimation()
     {
         _animationController.SwitchToIdle();
-        _gameManager.ResetLevel();
     }
 
     public void ResetPlayer()

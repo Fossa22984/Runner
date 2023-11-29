@@ -1,6 +1,4 @@
 using Assets.Scripts.DataBase;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -9,12 +7,17 @@ public class Authorization : MonoBehaviour
 {
     [SerializeField] private FirebaseDbContext _firebaseDbContext;
     [SerializeField] private PlayerRepository _playerRepository;
-    [SerializeField] private GameObject _menu;
+    [SerializeField] private GameObject _gameManager;
 
     [SerializeField] private TMP_InputField _email;
     [SerializeField] private TMP_InputField _password;
 
     [SerializeField] private TMP_Text _errorMessage;
+
+    private void Start()
+    {
+        _gameManager.GetComponent<GameManager>().LogOutEvent += () => gameObject.SetActive(true);
+    }
 
     public async void onClickLoginButton()
     {
@@ -22,12 +25,12 @@ public class Authorization : MonoBehaviour
 
         var checkResult = await CheckUserAsync(_email.text, _password.text);
 
-        if (checkResult!=null)
+        if (checkResult != null)
         {
             _playerRepository.Initialize(checkResult);
             gameObject.SetActive(false);
-            _menu.SetActive(true);
-        }        
+            _gameManager.SetActive(true);
+        }
     }
 
     private async Task<Player> CheckUserAsync(string email, string password)

@@ -1,6 +1,4 @@
 using Assets.Scripts.DataBase;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +6,8 @@ public class Registration : MonoBehaviour
 {
     [SerializeField] private FirebaseDbContext _firebaseDbContext;
     [SerializeField] private PlayerRepository _playerRepository;
-    [SerializeField] private GameObject _menu;
+
+    [SerializeField] private GameObject _gameManager;
 
     [SerializeField] private TMP_InputField _name;
     [SerializeField] private TMP_InputField _email;
@@ -29,7 +28,7 @@ public class Registration : MonoBehaviour
         {
             _playerRepository.Initialize(newPlayer);
             gameObject.SetActive(false);
-            _menu.SetActive(true);
+            _gameManager.SetActive(true);
         }
     }
 

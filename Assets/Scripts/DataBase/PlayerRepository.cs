@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,9 +21,9 @@ namespace Assets.Scripts.DataBase
                 Player.Score.BestScore = score;
         }
 
-        public void SetBalance()
+        public void SetBalance(int coins = 1)
         {
-            Player.Score.Balance++;
+            Player.Score.Balance += coins;
         }
 
         public async Task ChangeUserData()
@@ -37,5 +36,11 @@ namespace Assets.Scripts.DataBase
             var leaders = await _firebaseDbContext.GetAllUserAsync();
             return leaders.OrderByDescending(x => x.Score.BestScore).Take(10).ToList();
         }
+
+        public async Task LogOut()
+        {
+            await ChangeUserData();
+        }
+
     }
 }

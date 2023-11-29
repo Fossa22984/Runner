@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 
 public class ObstacleGenerator : MonoBehaviour
 {
@@ -14,9 +11,7 @@ public class ObstacleGenerator : MonoBehaviour
     [SerializeField] private int _itemSpace = 5;
     [SerializeField] private int _itemCountInMap = 5;
 
-
     [SerializeField] private int _obstaclesCount;
-
 
     void Start()
     {
