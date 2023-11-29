@@ -9,7 +9,7 @@ public static class ConstVar
     public const float VertexOfParabola = 2.5f;
     public const int Reward = 100;
 
-    public const float StartingSpeed = 10f;
+    public const float StartingSpeed = 8f;
     public const int SpeedChangeStep = 20;
 
     public static float GetPointParabola(int i)

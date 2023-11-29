@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         PreparePool();
-        _deathZone.ResetLevelEvent += GameOver;
+        _playerController.ResetLevelEvent += GameOver;
         _coinGenerator.SetCoinEvent += SetCoin;
     }
 
@@ -69,7 +69,6 @@ public class GameManager : MonoBehaviour
     {
         IsPause = true;
         SwipeController.Instance.enabled = false;
-        _playerController.ResetPlayer();
         _playerController.ResetPlayerAnimation();
         await _player.ChangeUserData();
         _menu.ShowViewGameOver(await _player.GetLeaders());

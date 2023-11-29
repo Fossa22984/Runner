@@ -62,7 +62,7 @@ public class ObstacleGenerator : MonoBehaviour
         var res = chunk.GetComponent<Obstacle>();
         if (res != null)
         {
-            Vector3 obstaclePos = new Vector3((int)res.TrackPosition * ConstVar.LaneOffset, 0, chunk.transform.position.z);// chunk.transform.position;//new Vector3((int)TrackPos.Center * laneOffset, 0, _itemCountInMap * _itemSpace);
+            Vector3 obstaclePos = new Vector3((int)res.TrackPosition * ConstVar.LaneOffset-0.25f, 0, chunk.transform.position.z);
             _coinGenerator.CreateCoins(res.Style, obstaclePos);
         }
     }

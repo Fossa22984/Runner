@@ -8,6 +8,6 @@ public class Dotween : MonoBehaviour
 
     void Start()
     {
-        _text.transform.DOScale(2, 1).SetLoops(-1, LoopType.Yoyo);
+        _text.transform.DOScale(1.5f, 1).SetLoops(-1, LoopType.Yoyo);
     }
 }

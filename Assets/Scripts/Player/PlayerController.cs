@@ -1,8 +1,14 @@
+using DG.Tweening;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
+    public delegate Task ResetLevelDelegate();
+    public ResetLevelDelegate ResetLevelEvent;
+
     [SerializeField] private AnimationController _animationController;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private CapsuleCollider _collider;
@@ -15,17 +21,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _pointFinish;
     [SerializeField] private float _lastVectorX;
     private Vector3 _startGamePosition;
-    private Quaternion _startGameRotation;
     private Coroutine _movingCoroutine;
     private bool _isMoving = false;
     private bool _isJumping = false;
     private bool _isRolling = false;
+    private bool _isDead = false;
 
 
     private void Start()
     {
         _startGamePosition = transform.position;
-        _startGameRotation = transform.rotation;
         SwipeController.Instance.MoveEvent += MovePlayer;
     }
 
@@ -84,7 +89,9 @@ public class PlayerController : MonoBehaviour
         } while (_rigidbody.velocity.y != 0);
         _isJumping = false;
         Physics.gravity = new Vector3(0, _realGravity, 0);
+        if(!_isDead)
         _animationController.SwitchToRun();
+        else _animationController.SwitchToIdle();
     }
 
     void MoveHorizontal(float speed)
@@ -132,12 +139,40 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer()
     {
+        _isDead = false;
         _rigidbody.velocity = Vector3.zero;
         _pointStart = 0;
         _pointFinish = 0;
 
         _animationController.SwitchToIdle();
-        transform.position = _startGamePosition;
-        transform.rotation = _startGameRotation;
+       // StartCoroutine(LerpMotion());
+
+        _rigidbody.DOMove(_startGamePosition, 0.1f);
+
+        //      transform.position = _startGamePosition;
+    }
+
+    private IEnumerator LerpMotion()
+    {
+        Debug.Log($"[{GetType().Name}][LerpMotion] LerpMotion started");
+       var _timeCounter = 0f;
+        while (_timeCounter < 1f)
+        {
+            var normalizedTime = _timeCounter / 1f;
+            transform.position = Vector3.Lerp(transform.position, _startGamePosition, normalizedTime);
+            _timeCounter += Time.deltaTime;
+            yield return null;
+        }
+
+        Debug.Log($"[{GetType().Name}][LerpMotion] LerpMotion completed");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+            _isDead=true;
+             ResetLevelEvent?.Invoke();
+        }
     }
 }
