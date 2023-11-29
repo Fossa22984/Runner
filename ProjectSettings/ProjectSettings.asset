@@ -921,7 +921,13 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -941,11 +947,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: ee2bc9ca-a02b-402c-92c0-a0495d830270
+  cloudProjectId: 0282685a-be57-435b-a92b-0c9587c677bc
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Runner 2023-11-17_11-45-21
-  organizationId: unity_3f505408feecdba6339c
+  projectName: Runner
+  organizationId: garbagefossa
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

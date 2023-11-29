@@ -35,7 +35,7 @@ namespace Assets.Scripts.DataBase
         public async Task<List<Player>> GetLeaders()
         {
             var leaders = await _firebaseDbContext.GetAllUserAsync();
-            return leaders.OrderByDescending(x => x.Score.BestScore).ToList();
+            return leaders.OrderByDescending(x => x.Score.BestScore).Take(10).ToList();
         }
     }
 }

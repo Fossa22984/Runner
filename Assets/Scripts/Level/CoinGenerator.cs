@@ -64,8 +64,11 @@ public class CoinGenerator : MonoBehaviour
                 var coin = PoolManager.GetObject(_coinPrefab);
                 if (coin.TryGetComponent<Coin>(out var res))
                 {
-                    res.CoinRemoveEvent += RemoveCoin;
-                    res.SetCoinEvent += SetCoin;
+                    if (res.CoinRemoveEvent == null)
+                    {
+                        res.CoinRemoveEvent += RemoveCoin;
+                        res.SetCoinEvent += SetCoin;
+                    }
                 }
                 coinPosition.y = coinsHeight;
                 coinPosition.z = i * ((float)1);
@@ -81,8 +84,11 @@ public class CoinGenerator : MonoBehaviour
                 var coin = PoolManager.GetObject(_coinPrefab);
                 if (coin.TryGetComponent<Coin>(out var res))
                 {
-                    res.CoinRemoveEvent += RemoveCoin;
-                    res.SetCoinEvent += SetCoin;
+                    if (res.CoinRemoveEvent == null)
+                    {
+                        res.CoinRemoveEvent += RemoveCoin;
+                        res.SetCoinEvent += SetCoin;
+                    }
                 }
                 coinPosition.y = Mathf.Max(-1 / 2f * Mathf.Pow(i, 2) + 2.5f, coinsHeight);
                 coinPosition.z = i * ((float)1);

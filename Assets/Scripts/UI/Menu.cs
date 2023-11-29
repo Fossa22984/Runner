@@ -5,12 +5,16 @@ using UnityEngine;
 
 public class Menu : MonoBehaviour
 {
+    [SerializeField] private Rewarded _rewarded;
+
     [SerializeField] private LeaderboardItem _leaderboardItem;
     [SerializeField] private Transform _parentForLeaderboardItem;
     [SerializeField] private GameObject _leaderboard;
 
     [SerializeField] private TMP_Text _scoreText;
     private string _scoreFormat;
+
+
     private void Awake()
     {
         _scoreFormat = _scoreText.text;
@@ -36,7 +40,7 @@ public class Menu : MonoBehaviour
         foreach (Transform item in _parentForLeaderboardItem)
         {
             if (item.GetComponent<LeaderboardItem>() != null)
-                Destroy(item);
+                Destroy(item.gameObject);
         }
     }
 
