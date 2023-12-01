@@ -104,8 +104,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.00526, y: 0.008090001, z: 0.00082000025}
-  m_Center: {x: -0.0032620002, y: 0.0028650002, z: -1.2133748e-24}
+  m_Size: {x: 0.006166131, y: 0.0109444065, z: 0.00082000025}
+  m_Center: {x: -0.0032843223, y: 0.0024639978, z: -0}
 --- !u!114 &8246095571222937541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,4 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f372315712336d5419bd03574fb6992f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotationSpeed: 100
+  IsSubscribedCoinRemoveEvent: 0
+  IsSubscribedSetCoinEvent: 0

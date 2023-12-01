@@ -1,5 +1,6 @@
 using Firebase.Database;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,7 +19,14 @@ public class FirebaseDbContext : MonoBehaviour
         if (user != null) { return false; }
 
         var json = JsonUtility.ToJson(player);
-        await _databaseReference.Child(nameof(PlayersData.Players)).Child(player.Email).SetRawJsonValueAsync(json);
+        try
+        {
+            await _databaseReference.Child(nameof(PlayersData.Players)).Child(GetNodeName(player.Email)).SetRawJsonValueAsync(json);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
 
         return true;
     }
@@ -29,24 +37,41 @@ public class FirebaseDbContext : MonoBehaviour
         if (user == null) { return false; }
 
         var json = JsonUtility.ToJson(player);
-        await _databaseReference.Child(nameof(PlayersData.Players)).Child(player.Email).SetRawJsonValueAsync(json);
+        try
+        {
+            await _databaseReference.Child(nameof(PlayersData.Players)).Child(GetNodeName(player.Email)).SetRawJsonValueAsync(json);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
 
         return true;
     }
 
     public async Task<Player> GetUserAsync(string email)
     {
-        DataSnapshot snapshot = await _databaseReference.Child(nameof(PlayersData.Players)).Child(email).GetValueAsync();
+        try
+        {
+            DataSnapshot snapshot = await _databaseReference.Child(nameof(PlayersData.Players)).Child(GetNodeName(email)).GetValueAsync();
 
-        if (snapshot.Exists)
-        {
-            return JsonUtility.FromJson<Player>(snapshot.GetRawJsonValue());
+            if (snapshot.Exists)
+            {
+                return JsonUtility.FromJson<Player>(snapshot.GetRawJsonValue());
+            }
+            else
+            {
+                Debug.LogWarning("Node does not exist.");
+                return null;
+            }
         }
-        else
+        catch (System.Exception ex)
         {
-            Debug.LogWarning("Node does not exist.");
-            return null;
+
+            Debug.LogException(ex);
         }
+
+        return null;
     }
 
     public async Task<List<Player>> GetAllUserAsync()
@@ -68,5 +93,10 @@ public class FirebaseDbContext : MonoBehaviour
             Debug.LogWarning("Node does not exist.");
             return null;
         }
+    }
+
+    private string GetNodeName(string email)
+    {
+        return new string(email.Select(c => Helper.CharsToReplace.Contains(c) ? '_' : c).ToArray());
     }
 }

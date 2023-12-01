@@ -41,6 +41,5 @@ namespace Assets.Scripts.DataBase
         {
             await ChangeUserData();
         }
-
     }
 }

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-
 
 public class CoinGenerator : MonoBehaviour
 {
-    public delegate void SetCoinDelegate();
-    public SetCoinDelegate SetCoinEvent;
+    public event Action SetCoinEvent;
 
     [SerializeField] private GameObject _coinPrefab;
     private List<GameObject> _activeCoins = new List<GameObject>();
@@ -23,9 +22,9 @@ public class CoinGenerator : MonoBehaviour
         if (GameManager.IsPause) return;
 
         foreach (var chunk in _activeCoins)
-            chunk.transform.position -= new Vector3(0, 0, GameManager.Speed * Time.deltaTime);
+            chunk.transform.position -= new Vector3(0, 0, GameSpeedController.Speed * Time.deltaTime);
 
-        if (_activeCoins.Count != 0 && _activeCoins[0].transform.position.z < ConstVar.ChunkDeleteDistance)
+        if (_activeCoins.Count != 0 && _activeCoins[0].transform.position.z < Helper.ChunkDeleteDistance)
         {
             PoolManager.PutObject(_activeCoins[0]);
             _activeCoins.RemoveAt(0);
@@ -41,15 +40,8 @@ public class CoinGenerator : MonoBehaviour
         }
     }
 
-    private void RemoveCoin(GameObject coin)
-    {
-        _activeCoins.Remove(coin);
-    }
-
-    private void SetCoin()
-    {
-        SetCoinEvent?.Invoke();
-    }
+    private void RemoveCoin(GameObject coin) => _activeCoins.Remove(coin);
+    private void SetCoin() => SetCoinEvent?.Invoke();
 
     public void CreateCoins(Style coinStyle, Vector3 position)
     {
@@ -59,17 +51,33 @@ public class CoinGenerator : MonoBehaviour
             var coin = PoolManager.GetObject(_coinPrefab);
             if (coin.TryGetComponent<Coin>(out var res))
             {
-                if (res.CoinRemoveEvent == null)
+                if (!res.IsSubscribedCoinRemoveEvent)
                 {
                     res.CoinRemoveEvent += RemoveCoin;
+                    res.IsSubscribedCoinRemoveEvent = res.CheckSubscribedCoinRemoveEvent();
+                }
+                if (!res.IsSubscribedSetCoinEvent)
+                {
                     res.SetCoinEvent += SetCoin;
+                    res.IsSubscribedSetCoinEvent = res.CheckSubscribedSetCoinEvent();
                 }
             }
-            coinPosition.y = (coinStyle == Style.Line) ? coinsHeight : Mathf.Max(ConstVar.GetPointParabola(i), coinsHeight);
+            coinPosition.y = (coinStyle == Style.Line) ? coinsHeight : Mathf.Max(Helper.GetPointParabola(i), coinsHeight);
             coinPosition.z = i * ((float)1);
             coin.transform.position = coinPosition + position;
             coin.SetActive(true);
             _activeCoins.Add(coin);
+        }
+    }
+
+    ~CoinGenerator()
+    {
+        if (SetCoinEvent != null)
+        {
+            foreach (Delegate d in SetCoinEvent.GetInvocationList())
+            {
+                SetCoinEvent -= (Action)d;
+            }
         }
     }
 }

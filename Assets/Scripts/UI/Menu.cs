@@ -10,17 +10,28 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject _playButton;
 
     [SerializeField] private TMP_Text _scoreText;
+    [SerializeField] private TMP_Text _balanceText;
+
     private string _scoreFormat;
+    private string _balanceFormat;
 
     private void Awake()
     {
         _scoreFormat = _scoreText.text;
+        _balanceFormat = _balanceText.text;
     }
 
     public void SetData(int currentScore, int score, int coins)
     {
         _scoreText.text = string.Format(_scoreFormat, currentScore.ToString(), score.ToString(), coins.ToString());
+        _balanceText.text = string.Format(_balanceFormat, coins.ToString());
     }
+
+    public void SetCoins(int coins) =>
+        _balanceText.text = string.Format(_balanceFormat, coins.ToString());
+
+    public void SetScore(int currentScore, int score) =>
+        _scoreText.text = string.Format(_scoreFormat, currentScore.ToString(), score.ToString());
 
     public void ShowViewGameOver(List<Player> players)
     {

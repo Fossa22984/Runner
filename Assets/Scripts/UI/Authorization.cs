@@ -51,6 +51,12 @@ public class Authorization : MonoBehaviour
 
     private bool CheckFields()
     {
+        if (!Helper.CheckInternetConnection())
+        {
+            _errorMessage.text = "No internet connection";
+            return false;
+        }
+
         if (!_email.text.Equals("") & !_password.text.Equals(""))
         {
             _errorMessage.text = "";

@@ -34,6 +34,12 @@ public class Registration : MonoBehaviour
 
     private bool CheckFields()
     {
+        if (!Helper.CheckInternetConnection())
+        {
+            _errorMessage.text = "No internet connection";
+            return false;
+        }
+
         if (!_name.text.Equals("") & !_email.text.Equals("") & !_password.text.Equals("") & !_confirmPassword.text.Equals(""))
         {
             if (_password.text.Equals(_confirmPassword.text))

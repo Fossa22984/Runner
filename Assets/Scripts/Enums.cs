@@ -10,3 +10,9 @@ public enum TrackPosition
     Center,
     Right
 };
+
+public enum HorizontalMovement
+{
+    Left = -1,
+    Right = 1
+};

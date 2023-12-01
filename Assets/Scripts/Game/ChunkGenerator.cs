@@ -18,9 +18,9 @@ public class ChunkGenerator : MonoBehaviour
         if (GameManager.IsPause) return;
 
         foreach (var chunk in _activeChunks)
-            chunk.transform.position -= new Vector3(0, 0, GameManager.Speed * Time.deltaTime);
+            chunk.transform.position -= new Vector3(0, 0, GameSpeedController.Speed * Time.deltaTime);
 
-        if (_activeChunks.Count != 0 && _activeChunks[0].transform.position.z < ConstVar.ChunkDeleteDistance)
+        if (_activeChunks.Count != 0 && _activeChunks[0].transform.position.z < Helper.ChunkDeleteDistance)
         {
             PoolManager.PutObject(_activeChunks[0]);
             _activeChunks.RemoveAt(0);
@@ -48,7 +48,7 @@ public class ChunkGenerator : MonoBehaviour
 
         var position = Vector3.zero;
         if (_activeChunks.Count > 0)
-            position = _activeChunks[_activeChunks.Count - 1].transform.position + new Vector3(0, 0, ConstVar.LengthChunk);
+            position = _activeChunks[_activeChunks.Count - 1].transform.position + new Vector3(0, 0, Helper.LengthChunk);
 
         chunk.transform.position = position;
         chunk.SetActive(true);

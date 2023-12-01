@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,11 +6,8 @@ public class SwipeController : MonoBehaviour
 {
     const float SwipeThreshold = 50;
 
-    public delegate void MoveDelegate(bool[] swipes);
-    public MoveDelegate MoveEvent;
-
-    public delegate void ClickDelegate(Vector2 position);
-    public ClickDelegate ClickEvent;
+    public event Action<bool[]> MoveEvent;
+    public event Action<Vector2> ClickEvent;
 
     public enum Direction { Left, Right, Up, Down };
     private bool[] _swipes = new bool[4];
@@ -94,6 +92,21 @@ public class SwipeController : MonoBehaviour
         for (int i = 0; i < _swipes.Length; i++)
         {
             _swipes[i] = false;
+        }
+    }
+
+    ~SwipeController()
+    {
+        if (MoveEvent != null)
+        {
+            foreach (Delegate d in MoveEvent.GetInvocationList())
+                MoveEvent -= (Action<bool[]>)d;
+        }
+
+        if (ClickEvent != null)
+        {
+            foreach (Delegate d in ClickEvent.GetInvocationList())
+                ClickEvent -= (Action<Vector2>)d;
         }
     }
 }

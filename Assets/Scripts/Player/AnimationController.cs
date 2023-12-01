@@ -17,17 +17,18 @@ public class AnimationController : MonoBehaviour
 
     public void SwitchToRun()
     {
-        _animator.Play(_runAnimation);
+
+        _animator.SetTrigger(_runAnimation);
     }
 
     public void SwitchToJump()
     {
-        _animator.Play(_jumpAnimation);
+        _animator.SetTrigger(_jumpAnimation);
     }
 
     public void SwitchToRoll()
     {
-        _animator.Play(_rollAnimation);
+        _animator.SetTrigger(_rollAnimation);
     }
 
     public void SwitchToStumble()
